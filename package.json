@@ -39,7 +39,13 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "quotes": "single",
+      "indent": [
+        "error",
+        4
+      ]
+    }
   },
   "browserslist": [
     "> 1%",
