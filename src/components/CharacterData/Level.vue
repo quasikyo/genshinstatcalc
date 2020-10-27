@@ -1,12 +1,12 @@
 <template>
-  <section id="results">
-    <h1>Results</h1>
-  </section>
+  <div>
+    <h1>Level</h1>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Results',
+  name: 'Level',
 };
 </script>
 

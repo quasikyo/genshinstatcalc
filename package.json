@@ -40,10 +40,13 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "quotes": "single",
+      "quotes": [
+        "error",
+        "single"
+      ],
       "indent": [
         "error",
-        4
+        2
       ]
     }
   },

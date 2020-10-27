@@ -1,14 +1,14 @@
 <template>
-    <v-app>
-        <Characters />
-        <v-main>
-            <div id="split">
-                <CharacterData />
-                <Results />
-            </div>
-        </v-main>
-        <Conditionals />
-    </v-app>
+  <v-app>
+    <Characters />
+    <v-main>
+      <div id="split">
+        <CharacterData />
+        <Results />
+      </div>
+    </v-main>
+    <Conditionals />
+  </v-app>
 </template>
 
 <script>
@@ -18,18 +18,18 @@ import Results from './components/Results';
 import Conditionals from './components/Conditionals';
 
 export default {
-    name: 'App',
-    components: {
-        Characters,
-        CharacterData,
-        Results,
-        Conditionals,
-    },
+  name: 'App',
+  components: {
+    Characters,
+    CharacterData,
+    Results,
+    Conditionals,
+  },
 };
 </script>
 
 <style scoped>
 #split {
-    display: flex;
+  display: flex;
 }
 </style>
