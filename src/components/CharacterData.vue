@@ -1,6 +1,6 @@
 <template>
   <section id="characterData">
-    <v-navigation-drawer dark height="100vh" width="100%">
+    <v-navigation-drawer height="100vh" width="100%">
       <v-container>
         <v-item-group v-model="window" mandatory>
           <v-row no-gutters v-for="row in length / buttonsPerRow" :key="row">
@@ -18,7 +18,7 @@
 
         <v-window v-model="window">
           <v-window-item><Level /></v-window-item>
-          <v-window-item><Base /></v-window-item>
+          <v-window-item><BaseStats /></v-window-item>
           <v-window-item><Talents /></v-window-item>
           <v-window-item><Weapon /></v-window-item>
           <v-window-item><Artifacts /></v-window-item>
@@ -31,7 +31,7 @@
 
 <script>
 import Level from './CharacterData/Level';
-import Base from './CharacterData/Base';
+import BaseStats from './CharacterData/BaseStats';
 import Talents from './CharacterData/Talents';
 import Weapon from './CharacterData/Weapon';
 import Artifacts from './CharacterData/Artifacts';
@@ -41,7 +41,7 @@ export default {
   name: 'CharacterData',
   components: {
     Level,
-    Base,
+    BaseStats,
     Talents,
     Weapon,
     Artifacts,
@@ -52,12 +52,19 @@ export default {
       length: 6,
       window: 0,
       buttonsPerRow: 6,
-      // Level, Base, Talents, Weapon, Artifacts, Other Buffs
-      labels: ['L', 'B', 'T', 'W', 'A', 'OB'],
+      // Level, Base Stats, Talents, Weapon, Artifacts, Other Buffs
+      labels: ['L', 'BS', 'T', 'W', 'A', 'OB'],
     };
   },
 };
 </script>
 
-<style scoped>
+<style>
+#characterData .v-navigation-drawer__content {
+  scrollbar-width: none;
+}
+
+.v-window {
+  margin-top: 12px;
+}
 </style>

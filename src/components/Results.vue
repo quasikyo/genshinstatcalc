@@ -1,6 +1,8 @@
 <template>
   <section id="results">
-    <h1>Results</h1>
+    <v-container>
+      <h1>Results</h1>
+    </v-container>
   </section>
 </template>
 

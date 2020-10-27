@@ -1,7 +1,9 @@
 <template>
   <section id="conditionals">
-    <v-navigation-drawer dark app right>
-      <h1>Conditionals</h1>
+    <v-navigation-drawer app right expand-on-hover>
+      <v-container>
+        <h1>Conditionals</h1>
+      </v-container>
     </v-navigation-drawer>
   </section>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <section id="characters">
-    <v-navigation-drawer dark app mini-variant>
+    <v-navigation-drawer app mini-variant>
       <div id="characterButtons">
         <v-menu
           :min-width="200"
