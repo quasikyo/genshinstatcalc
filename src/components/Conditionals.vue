@@ -2,7 +2,7 @@
   <section id="conditionals">
     <v-navigation-drawer app right expand-on-hover>
       <v-container>
-        <h1>Conditionals</h1>
+        <h4 class="text-h4">Conditionals</h4>
       </v-container>
     </v-navigation-drawer>
   </section>

@@ -1,29 +1,59 @@
 <template>
-  <BaseLayout id="baseStats" headerText="Base Stats">
-    <template v-slot>
-      <v-form ref="form">
-        <v-text-field
-          v-for="(stat, statName, i) in stats"
-          :key="i"
-          v-model="stat.value"
-          :label="statName"
-          type="number"
-        />
-      </v-form>
-    </template>
-  </BaseLayout>
+  <div>
+    <BaseLayout id="level" headerText="Level">
+      <template v-slot>
+        <v-form ref="levelForm">
+          <v-text-field v-model="level" label="Level" type="number" />
+        </v-form>
+      </template>
+    </BaseLayout>
+    <br>
+    <BaseLayout id="weapon" headerText="Weapon">
+      <template v-slot>
+        <v-form ref="weaponForm">
+          <v-text-field v-model="weapon.atk.value" label="atk" type="number" />
+          <div class="substat-inputs">
+            <v-select label="Substat" :items="Object.keys(stats)" />
+            <v-text-field v-model="weapon.substat.value" type="number" />
+          </div>
+        </v-form>
+      </template>
+    </BaseLayout>
+    <br>
+    <BaseLayout id="baseStats" headerText="Base Stats">
+      <template v-slot>
+        <v-form ref="baseStatsForm">
+          <v-text-field
+            v-for="(stat, statName, i) in stats"
+            :key="i"
+            v-model="stat.value"
+            :label="statName"
+            type="number"
+          />
+        </v-form>
+      </template>
+    </BaseLayout>
+  </div>
 </template>
 
 <script>
 import BaseLayout from './BaseLayout';
 
 export default {
-  name: 'BaseStats',
+  name: 'Level',
   components: {
     BaseLayout,
   },
   data() {
     return {
+      level: 1,
+      weapon: {
+        atk: { value: 0, },
+        substat: {
+          stat: '',
+          value: 0,
+        },
+      },
       stats: {
         maxHP: { value: 0, },
         atk: { value: 0, },
@@ -48,5 +78,7 @@ export default {
 </script>
 
 <style>
-
+.substat-inputs {
+  display: flex;
+}
 </style>

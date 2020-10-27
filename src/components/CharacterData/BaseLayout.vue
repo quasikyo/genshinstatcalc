@@ -1,6 +1,6 @@
 <template>
   <article :id=id>
-    <h3 class="text-h3">{{ headerText }}</h3>
+    <h4 class="text-h4">{{ headerText }}</h4>
     <slot></slot>
   </article>
 </template>

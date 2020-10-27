@@ -28,8 +28,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 #split {
   display: flex;
+}
+
+fieldset {
+  border: none;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <section id="characterData">
-    <v-navigation-drawer height="100vh" width="100%">
+    <v-navigation-drawer height="100vh">
       <v-container>
         <v-item-group v-model="window" mandatory>
           <v-row no-gutters v-for="row in length / buttonsPerRow" :key="row">
@@ -17,10 +17,8 @@
         </v-item-group>
 
         <v-window v-model="window">
-          <v-window-item><Level /></v-window-item>
           <v-window-item><BaseStats /></v-window-item>
           <v-window-item><Talents /></v-window-item>
-          <v-window-item><Weapon /></v-window-item>
           <v-window-item><Artifacts /></v-window-item>
           <v-window-item><OtherBuffs /></v-window-item>
         </v-window>
@@ -30,30 +28,26 @@
 </template>
 
 <script>
-import Level from './CharacterData/Level';
 import BaseStats from './CharacterData/BaseStats';
 import Talents from './CharacterData/Talents';
-import Weapon from './CharacterData/Weapon';
 import Artifacts from './CharacterData/Artifacts';
 import OtherBuffs from './CharacterData/OtherBuffs';
 
 export default {
   name: 'CharacterData',
   components: {
-    Level,
     BaseStats,
     Talents,
-    Weapon,
     Artifacts,
     OtherBuffs,
   },
   data() {
     return {
-      length: 6,
+      length: 4,
       window: 0,
-      buttonsPerRow: 6,
-      // Level, Base Stats, Talents, Weapon, Artifacts, Other Buffs
-      labels: ['L', 'BS', 'T', 'W', 'A', 'OB'],
+      buttonsPerRow: 4,
+      // Base Stats (Level, Weapon, Base Stats), Talents, Artifacts, Other Buffs
+      labels: ['BS', 'T', 'A', 'OB'],
     };
   },
 };
@@ -61,7 +55,7 @@ export default {
 
 <style>
 #characterData .v-navigation-drawer__content {
-  scrollbar-width: none;
+  scrollbar-width: thin;
 }
 
 .v-window {
