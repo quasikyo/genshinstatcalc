@@ -60,6 +60,12 @@ export default {
 </script>
 
 <style>
+#characterData {
+  top: 0;
+  position: sticky;
+  height: 100%;
+}
+
 #characterData .v-navigation-drawer__content {
   scrollbar-width: thin;
 }
