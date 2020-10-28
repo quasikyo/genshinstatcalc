@@ -18,21 +18,33 @@
         <v-form ref="weaponForm" @submit.prevent>
           <v-text-field
             v-model="weapon.atk"
-            label="atk (flat)"
+            label="base atk (flat)"
             type="number"
             @change="setWeapon"
             :disabled="includesWeaponAtk"
           />
 
           <div class="substat-inputs">
+            <!--
+              Flat bases can be increased by flat or %.
+              % bases can only be increased by other %.
+
+              Therefore:
+              Flat stats can only increase flat bases.
+              % stats can increase flat and other %.
+             -->
             <v-select
               label="Substat"
               v-model="weapon.substat.stat"
-              :items="statNames(weapon.substat.isFlat)"
+              :items="
+                weapon.substat.isFlat
+                  ? statNames(true)
+                  : statNames(null, true)
+              "
               @change="setWeapon"
             />
             <v-text-field
-              :disabled="includesWeaponSubstat"
+              :label="weapon.substat.isFlat ? '(flat)' : '%' "
               v-model="weapon.substat.value"
               type="number"
               @change="setWeapon"
@@ -63,14 +75,7 @@
               dense
               v-if="statName == 'atk'"
               v-model="includesWeaponAtk"
-              label="Includes Weaon Atk"
-              @change="setBaseStat(statName)"
-            />
-            <v-switch
-              dense
-              v-if="statName == weapon.substat.stat"
-              v-model="includesWeaponSubstat"
-              label="Includes Weapon Substat"
+              label="Includes Weapon Base Atk"
               @change="setBaseStat(statName)"
             />
           </div>
@@ -102,7 +107,6 @@ export default {
       },
       baseStats: {},
       includesWeaponAtk: true,
-      includesWeaponSubstat: false,
     };
   },
   created() {
@@ -121,6 +125,7 @@ export default {
       this.weapon.atk = Number(this.weapon.atk);
       this.weapon.substat.value = Number(this.weapon.substat.value);
       this.$store.dispatch('stats/setWeapon', this.weapon);
+      this.totalStat(this.weapon.substat.stat); // debug
     },
     setBaseStat(statName) {
       this.baseStats[statName].value = Number(this.baseStats[statName].value);
@@ -128,9 +133,8 @@ export default {
         statName,
         stat: this.baseStats[statName],
         includesWeaponAtk: this.includesWeaponAtk,
-        includesWeaponSubstat: this.includesWeaponSubstat,
       });
-      console.log(statName, this.totalStat(statName));
+      this.totalStat(statName); // debug
     },
   },
 };

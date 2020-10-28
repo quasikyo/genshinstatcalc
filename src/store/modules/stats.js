@@ -77,7 +77,6 @@ const state = {
     },
   },
   includesWeaponAtk: true,
-  includesWeaponSubstat: false,
   buffs: {
     atk: [
       { value: 0, isFlat: true, },
@@ -90,9 +89,9 @@ const state = {
 
 const getters = {
   statNames(state) {
-    return function(areFlat) {
+    return function(areFlat, ignore=false) {
       const names = Object.keys(state.baseStats);
-      return names.filter((name) => state.baseStats[name].isFlat == areFlat);
+      return names.filter((name) => ignore || state.baseStats[name].isFlat == areFlat);
     };
   },
   totalStat(state) {
@@ -114,7 +113,7 @@ const getters = {
       // Apply weapon buffs if not already included
       // TODO: add error checking for flat increases on a non-flat base
       const { substat, atk } = state.weapon;
-      if (stat == substat.stat && !state.includesWeaponSubstat) {
+      if (stat == substat.stat) {
         if (substat.isFlat) {
           flatSum += substat.value;
         } else {
@@ -126,15 +125,18 @@ const getters = {
         base += atk;
       } // if
 
+      let total;
       if (state.baseStats[stat].isFlat) {
         // If the base stat itself is flat, it can be increased
         // by other flat increases as well as percentage increases.
-        return base * (1 + percentagesSum) + flatSum;
+        total = base * (1 + percentagesSum) + flatSum;
       } else {
         // If the base stat is not flat, add the other
         // percentages onto it to get the total percent.
-        return base + percentagesSum;
+        total = base + percentagesSum;
       } // if
+      console.log(`${stat}: ${total}`); // debug
+      return total;
     };
   },
 };
@@ -146,10 +148,9 @@ const mutations = {
   setWeapon(state, weapon) {
     state.weapon = weapon;
   },
-  setBaseStat(state, { statName, stat, includesWeaponAtk, includesWeaponSubstat }) {
+  setBaseStat(state, { statName, stat, includesWeaponAtk }) {
     state.baseStats[statName] = stat;
     state.includesWeaponAtk = includesWeaponAtk;
-    state.includesWeaponSubstat = includesWeaponSubstat;
   },
 };
 
@@ -160,8 +161,8 @@ const actions = {
   setWeapon({ commit }, weapon) {
     commit('setWeapon', weapon);
   },
-  setBaseStat({ commit }, { statName, stat, includesWeaponAtk, includesWeaponSubstat }) {
-    commit('setBaseStat', { statName, stat, includesWeaponAtk, includesWeaponSubstat });
+  setBaseStat({ commit }, { statName, stat, includesWeaponAtk }) {
+    commit('setBaseStat', { statName, stat, includesWeaponAtk });
   },
 };
 
