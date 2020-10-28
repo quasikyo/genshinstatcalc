@@ -43,12 +43,18 @@ export default {
   },
   data() {
     return {
-      length: 4,
       window: 0,
-      buttonsPerRow: 4,
       // Base Stats (Level, Weapon, Base Stats), Talents, Artifacts, Other Buffs
       labels: ['BS', 'T', 'A', 'OB'],
     };
+  },
+  computed: {
+    length() {
+      return this.labels.length;
+    },
+    buttonsPerRow() {
+      return this.length;
+    },
   },
 };
 </script>

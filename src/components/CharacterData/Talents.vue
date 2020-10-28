@@ -7,24 +7,31 @@
           v-for="(attack, i) in attacks"
           :key="`attack-${i}`"
         >
-          <v-text-field label="Label" />
-          <v-text-field label="% of ATK (decimal)" type="number" />
+          <v-text-field label="Label" v-model="attack.label" />
+          <v-text-field
+            label="% of ATK (decimal)"
+            v-model="attack.percentOfAtk"
+            type="number"
+          />
+
           <v-select
             label="Normal/Charged/Skill/Burst"
             :items="dmgTypes"
-            v-model="attack.dmgType.value"
+            v-model="attack.dmgType"
           />
+
           <v-select
             label="Elemental Type"
             :items="elementalTypes"
-            v-model="attack.elementalType.value"
+            v-model="attack.elementalType"
           />
-          <v-btn
-            outlined
-            color="error"
-            @click="removeAttack(i)"
-          >
+
+          <v-btn outlined color="error" @click="removeAttack(i)">
             Remove Attack
+          </v-btn>
+          <br><br>
+          <v-btn outlined color="success" @click="setAttack(i)">
+            Update Attack
           </v-btn>
         </fieldset>
       </v-form>
@@ -42,6 +49,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import BaseLayout from './BaseLayout';
 
 export default {
@@ -52,30 +60,32 @@ export default {
   data() {
     return {
       dialog: false,
-      dmgTypes: ['Normal', 'Charged', 'Skill', 'Burst',],
-      elementalTypes: [
-        'PHYS',
-        'Pyro',
-        'Hydro',
-        'Dendro',
-        'Electro',
-        'Anemo',
-        'Cryo',
-        'Geo',
-      ],
       attacks: [],
     };
   },
+  computed: {
+    ...mapState('attacks', ['dmgTypes', 'elementalTypes',]),
+  },
   methods: {
     addAttack() {
-      this.attacks.push({
-        percentOfAtk: { value: 0, },
-        dmgType: { value: 'Normal', },
-        // default to character elemental type
-        elementalType: { value: 'PHYS', },
-      });
+      const attack = {
+        label: '',
+        percentOfAtk: 0,
+        dmgType: 'Normal',
+        // TODO: default to character elemental type
+        elementalType: 'PHYS',
+      };
+      this.$store.dispatch('attacks/addAttack', attack);
+      this.attacks.push(attack);
+    },
+    setAttack(index) {
+      const { label, percentOfAtk, dmgType, elementalType } = this.attacks[index];
+      const attack = { label, percentOfAtk, dmgType, elementalType };
+      this.$store.dispatch('attacks/setAttack', { index, attack });
+      this.attacks[index] = attack;
     },
     removeAttack(index) {
+      this.$store.dispatch('attacks/removeAttack', index)
       this.attacks.splice(index, 1);
     },
   },
