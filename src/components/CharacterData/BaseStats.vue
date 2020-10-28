@@ -23,39 +23,17 @@
             @change="setWeapon"
             :disabled="includesWeaponAtk"
           />
-
-          <div class="substat-inputs">
-            <!--
-              Flat bases can be increased by flat or %.
-              % bases can only be increased by other %.
-
-              Therefore:
-              Flat stats can only increase flat bases.
-              % stats can increase flat and other %.
-             -->
-            <v-select
-              label="Substat"
-              v-model="weapon.substat.stat"
-              :items="
-                weapon.substat.isFlat
-                  ? statNames(true)
-                  : statNames(null, true)
-              "
-              @change="setWeapon"
-            />
-            <v-text-field
-              :label="weapon.substat.isFlat ? '(flat)' : '%' "
-              v-model="weapon.substat.value"
-              type="number"
-              @change="setWeapon"
-            />
-          </div>
-
-          <v-switch
+          <StatSelector
+            className="substat-inputs"
             dense
-            v-model="weapon.substat.isFlat"
-            label="Substat Flat"
-            @change="setWeapon"
+            :labels="{
+              stat: `Substat`,
+              value: weapon.substat.isFlat ? 'flat' : '%',
+              isFlat: `Substat Flat`,
+            }"
+            :original="weapon.substat"
+            :postChange="setWeapon"
+            @change="updateOriginal"
           />
         </v-form>
       </template>
@@ -64,8 +42,9 @@
     <BaseLayout id="baseStats" headerText="Base Stats">
       <template v-slot>
         <v-form ref="baseStatsForm" @submit.prevent>
-          <div v-for="(stat, statName) in baseStats" :key="statName">
+          <div v-for="(stat, statName, i) in baseStats" :key="statName">
             <v-text-field
+              :dense="i != 0"
               v-model="baseStats[statName].value"
               :label="stat.isFlat ? `${statName} (flat)` : `${statName} (%)`"
               type="number"
@@ -88,11 +67,13 @@
 <script>
 import { mapGetters } from 'vuex';
 import BaseLayout from './BaseLayout';
+import StatSelector from '../util/StatSelector';
 
 export default {
   name: 'Level',
   components: {
     BaseLayout,
+    StatSelector,
   },
   data() {
     return {
@@ -100,7 +81,7 @@ export default {
       weapon: {
         atk: 0,
         substat: {
-          stat: '',
+          stat: 'maxHP',
           value: 0,
           isFlat: true,
         },
@@ -114,9 +95,15 @@ export default {
     this.baseStats = this.$store._modules.root._rawModule.modules.stats.state.baseStats;
   },
   computed: {
-    ...mapGetters('stats', ['statNames', 'totalStat',]),
+    ...mapGetters('stats', ['totalStat',]),
   },
   methods: {
+    updateOriginal({ original, postChange, stat, value, isFlat }) {
+      Object.assign(original, {
+        stat, value, isFlat
+      });
+      postChange();
+    },
     setLevel() {
       this.level = Number(this.level);
       this.$store.dispatch('stats/setLevel', this.level);

@@ -1,7 +1,7 @@
 <template>
   <BaseLayout id="talents" headerText="Talents">
     <template v-slot>
-      <v-form>
+      <v-form ref="form" @submit.prevent>
         <fieldset
           class="attack-inputs"
           v-for="(attack, i) in attacks"
@@ -9,30 +9,39 @@
         >
           <v-text-field label="Label" v-model="attack.label" />
           <v-text-field
+            dense
             label="% of ATK (decimal)"
             v-model="attack.percentOfAtk"
             type="number"
           />
 
           <v-select
+            dense
             label="Normal/Charged/Skill/Burst"
             :items="dmgTypes"
             v-model="attack.dmgType"
           />
 
           <v-select
+            dense
             label="Elemental Type"
             :items="elementalTypes"
             v-model="attack.elementalType"
           />
 
-          <v-btn outlined color="error" @click="removeAttack(i)">
-            Remove Attack
-          </v-btn>
-          <br><br>
-          <v-btn outlined color="success" @click="setAttack(i)">
-            Update Attack
-          </v-btn>
+          <v-row>
+            <v-col>
+              <v-btn outlined color="error" @click="removeAttack(i)">
+                Remove
+              </v-btn>
+            </v-col>
+            <v-spacer />
+            <v-col>
+              <v-btn outlined color="success" @click="setAttack(i)">
+                Update
+              </v-btn>
+            </v-col>
+          </v-row>
         </fieldset>
       </v-form>
       <v-btn

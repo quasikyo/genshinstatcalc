@@ -11,31 +11,17 @@
           <legend><h6 class="text-h6">{{ `Artifact ${i + 1}` }}</h6></legend>
           <br>
 
-          <div class="main-stat-inputs">
-            <v-select
-              dense
-              label="Main Stat"
-              :items="
-                artifact.mainStat.isFlat
-                  ? statNames(true)
-                  : statNames(null, true)
-              "
-              v-model="artifact.mainStat.stat"
-              @change="setArtifactBuffs"
-            />
-            <v-text-field
-              dense
-              :label="artifact.mainStat.isFlat ? 'flat' : '%'"
-              v-model="artifact.mainStat.value"
-              type="number"
-              @change="setArtifactBuffs"
-            />
-          </div>
-          <v-switch
+          <StatSelector
+            className="main-stat-inputs"
             dense
-            v-model="artifact.mainStat.isFlat"
-            label="Main Stat Flat"
-            @change="setArtifactBuffs"
+            :labels="{
+              stat: 'Main Stat',
+              value: artifact.mainStat.isFlat ? 'flat' : '%',
+              isFlat: 'Main Stat Flat',
+            }"
+            :original="artifact.mainStat"
+            :postChange="setArtifactBuffs"
+            @change="updateOriginal"
           />
 
           <div
@@ -43,31 +29,17 @@
             v-for="(substat, j) in artifact.substats"
             :key="`artifact-${i}-substat-${j}`"
           >
-            <div class="substat-inputs">
-              <v-select
-                dense
-                :label="`Substat ${j + 1}`"
-                :items="
-                  substat.isFlat
-                    ? statNames(true)
-                    : statNames(null, true)
-                "
-                v-model="substat.stat"
-                @change="setArtifactBuffs"
-              />
-              <v-text-field
-                dense
-                :label="substat.isFlat ? 'flat' : '%'"
-                v-model="substat.value"
-                type="number"
-                @change="setArtifactBuffs"
-              />
-            </div>
-            <v-switch
+            <StatSelector
+              className="substat-inputs"
               dense
-              v-model="substat.isFlat"
-              :label="`Substat ${j + 1} Flat`"
-              @change="setArtifactBuffs"
+              :labels="{
+                stat: `Substat ${j + 1}`,
+                value: substat.isFlat ? 'flat' : '%',
+                isFlat: `Substat ${j + 1} Flat`,
+              }"
+              :original="substat"
+              :postChange="setArtifactBuffs"
+              @change="updateOriginal"
             />
           </div>
           <br>
@@ -78,13 +50,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import BaseLayout from './BaseLayout';
+import StatSelector from '../util/StatSelector';
 
 export default {
   name: 'Artifacts',
   components: {
     BaseLayout,
+    StatSelector,
   },
   data() {
     return {
@@ -103,10 +76,13 @@ export default {
       }),
     };
   },
-  computed: {
-    ...mapGetters('stats', ['statNames',]),
-  },
   methods: {
+    updateOriginal({ original, postChange, stat, value, isFlat }) {
+      Object.assign(original, {
+        stat, value, isFlat
+      });
+      postChange();
+    },
     // TODO: terribly inefficient to do this every change; find a better way
     setArtifactBuffs() {
       const buffs = {};
