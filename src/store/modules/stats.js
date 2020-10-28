@@ -102,13 +102,15 @@ const getters = {
       // TODO: add error checking for flat increases on a non-flat base
       let percentagesSum = 0;
       let flatSum = 0;
-      // state.buffs[stat].forEach((increase) => {
-      //   if (increase.isFlat) {
-      //     flatSum += increase.value;
-      //   } else {
-      //     percentagesSum += increase.value;
-      //   } // if
-      // });
+      if (state.buffs[stat]) {
+        state.buffs[stat].forEach((increase) => {
+          if (increase.isFlat) {
+            flatSum += increase.value;
+          } else {
+            percentagesSum += increase.value;
+          } // if
+        });
+      } // if
 
       // Apply weapon buffs if not already included
       // TODO: add error checking for flat increases on a non-flat base
@@ -152,6 +154,9 @@ const mutations = {
     state.baseStats[statName] = stat;
     state.includesWeaponAtk = includesWeaponAtk;
   },
+  setArtifactBuffs(state, buffs) {
+    state.buffs = buffs;
+  },
 };
 
 const actions = {
@@ -163,6 +168,9 @@ const actions = {
   },
   setBaseStat({ commit }, { statName, stat, includesWeaponAtk }) {
     commit('setBaseStat', { statName, stat, includesWeaponAtk });
+  },
+  setArtifactBuffs({ commit }, buffs) {
+    commit('setArtifactBuffs', buffs);
   },
 };
 
