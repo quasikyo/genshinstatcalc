@@ -79,10 +79,8 @@ export default {
       this.attacks.push(attack);
     },
     setAttack(index) {
-      const { label, percentOfAtk, dmgType, elementalType } = this.attacks[index];
-      const attack = { label, percentOfAtk, dmgType, elementalType };
-      this.$store.dispatch('attacks/setAttack', { index, attack });
-      this.attacks[index] = attack;
+      this.attacks[index].percentOfAtk = Number(this.attacks[index].percentOfAtk);
+      this.$store.dispatch('attacks/setAttack', { index, attack: this.attacks[index] });
     },
     removeAttack(index) {
       this.$store.dispatch('attacks/removeAttack', index)

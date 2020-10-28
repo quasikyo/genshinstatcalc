@@ -16,6 +16,9 @@
             <v-card-title>
               Select New Character or Display Current Character Values
             </v-card-title>
+            <v-card-text>
+              <h6 class="text-h6 warning--text">(To Be Implemented)</h6>
+            </v-card-text>
           </v-card>
         </v-menu>
       </div>

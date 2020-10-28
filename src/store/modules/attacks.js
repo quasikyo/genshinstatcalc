@@ -18,7 +18,6 @@ const mutations = {
     state.attacks.push(attack);
   },
   setAttack(state, { index, newAttack }) {
-    // console.log(newAttack);
     state.attacks[index] = newAttack;
   },
   removeAttack(state, index) {
@@ -30,9 +29,8 @@ const actions = {
   addAttack({ commit }, attack) {
     commit('addAttack', attack);
   },
-  setAttack({ commit, state }, { index, newAttack }) {
+  setAttack({ commit }, { index, newAttack }) {
     commit('setAttack', index, newAttack);
-    console.log('store', state.attacks);
   },
   removeAttack({ commit }, index) {
     commit('removeAttack', index);
