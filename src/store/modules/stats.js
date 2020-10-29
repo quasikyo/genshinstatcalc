@@ -76,15 +76,14 @@ const state = {
       isFlat: false,
     },
   },
-  includesWeaponAtk: true,
-  buffs: {
-    atk: [
-      { value: 0, isFlat: true, },
-    ],
-    def: [
-      { value: 0, isFlat: true, },
-    ],
+  dmgBonuses: {
+    normal: 0.1,
+    charged: 0.2,
+    skill: 0.3,
+    burst: 0.4,
   },
+  includesWeaponAtk: true,
+  buffs: {},
 };
 
 const getters = {
@@ -96,7 +95,8 @@ const getters = {
   },
   totalStat(state) {
     return function(stat) {
-      let base = state.baseStats[stat].value;
+      // Would sometimes result in a string
+      let base = Number(state.baseStats[stat].value);
 
       // Apply buffs from artifacts and other sources
       // TODO: add error checking for flat increases on a non-flat base
@@ -137,7 +137,6 @@ const getters = {
         // percentages onto it to get the total percent.
         total = base + percentagesSum;
       } // if
-      console.log(`${stat}: ${total}`); // debug
       return total;
     };
   },

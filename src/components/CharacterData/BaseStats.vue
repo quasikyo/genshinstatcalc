@@ -121,7 +121,6 @@ export default {
         stat: this.baseStats[statName],
         includesWeaponAtk: this.includesWeaponAtk,
       });
-      this.totalStat(statName); // debug
     },
   },
 };

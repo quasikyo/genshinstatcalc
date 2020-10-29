@@ -1,16 +1,35 @@
 const state = {
   dmgTypes: ['Normal', 'Charged', 'Skill', 'Burst',],
-  elementalTypes: [
-    'PHYS',
-    'Pyro',
-    'Hydro',
-    'Dendro',
-    'Electro',
-    'Anemo',
-    'Cryo',
-    'Geo',
-  ],
+  elementalTypes: ['PHYS', 'Elemental'],
   attacks: [],
+};
+
+const getters = {
+  calculateAttacks(state) {
+    return function(totalAtk, phys, elemental, dmgTypeBonuses) {
+      const calculatedAttacks = state.attacks.map((attack) => {
+        let dmgBonusSum = 0;
+
+        if (attack.elementalType == 'PHYS') {
+          dmgBonusSum += phys;
+        } else {
+          dmgBonusSum += elemental;
+        } // if
+
+        state.dmgTypes.forEach((type) => {
+          if (attack.dmgType == type) {
+            dmgBonusSum += dmgTypeBonuses[type.toLowerCase()];
+          } // if
+        });
+
+        return {
+          label: attack.label,
+          value: (totalAtk * attack.percentOfAtk * (1 + dmgBonusSum)).toFixed(2),
+        };
+      });
+      return calculatedAttacks;
+    };
+  },
 };
 
 const mutations = {
@@ -40,6 +59,7 @@ const actions = {
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions,
 };

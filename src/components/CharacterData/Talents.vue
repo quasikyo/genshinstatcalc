@@ -7,12 +7,18 @@
           v-for="(attack, i) in attacks"
           :key="`attack-${i}`"
         >
-          <v-text-field label="Label" v-model="attack.label" />
+          <v-text-field
+            label="Label"
+            v-model="attack.label"
+            @keypress="setAttack(i)"
+          />
+
           <v-text-field
             dense
             label="% of ATK (decimal)"
             v-model="attack.percentOfAtk"
             type="number"
+            @keypress="setAttack(i)"
           />
 
           <v-select
@@ -20,28 +26,21 @@
             label="Normal/Charged/Skill/Burst"
             :items="dmgTypes"
             v-model="attack.dmgType"
+            @change="setAttack(i)"
           />
 
           <v-select
             dense
-            label="Elemental Type"
+            label="PHYS/Elemental"
             :items="elementalTypes"
             v-model="attack.elementalType"
+            @change="setAttack(i)"
           />
 
-          <v-row>
-            <v-col>
-              <v-btn outlined color="error" @click="removeAttack(i)">
-                Remove
-              </v-btn>
-            </v-col>
-            <v-spacer />
-            <v-col>
-              <v-btn outlined color="success" @click="setAttack(i)">
-                Update
-              </v-btn>
-            </v-col>
-          </v-row>
+          <v-btn outlined color="error" @click="removeAttack(i)">
+            Remove
+          </v-btn>
+          <br>
         </fieldset>
       </v-form>
       <v-btn
@@ -68,7 +67,6 @@ export default {
   },
   data() {
     return {
-      dialog: false,
       attacks: [],
     };
   },
@@ -81,7 +79,6 @@ export default {
         label: '',
         percentOfAtk: 0,
         dmgType: 'Normal',
-        // TODO: default to character elemental type
         elementalType: 'PHYS',
       };
       this.$store.dispatch('attacks/addAttack', attack);
