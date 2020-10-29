@@ -1,6 +1,6 @@
 <template>
   <section id="characterData">
-    <v-navigation-drawer height="100vh">
+    <v-navigation-drawer app>
       <v-container>
         <v-item-group v-model="window" mandatory>
           <v-row no-gutters v-for="row in length / buttonsPerRow" :key="row">
@@ -10,7 +10,7 @@
               v-slot="{ active, toggle }"
             >
               <v-btn tile small :input-value="active" @click="toggle">
-                <v-icon>{{ labels[i - 1 + buttonsPerRow * (row - 1)] }}</v-icon>
+                {{ labels[i - 1 + buttonsPerRow * (row - 1)] }}
               </v-btn>
             </v-item>
           </v-row>
@@ -60,12 +60,6 @@ export default {
 </script>
 
 <style>
-#characterData {
-  top: 0;
-  position: sticky;
-  height: 100%;
-}
-
 #characterData .v-navigation-drawer__content {
   scrollbar-width: thin;
 }
