@@ -62,8 +62,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('stats', ['dmgBonuses',]),
-    ...mapGetters('stats', ['statNames', 'totalStat',]),
+    ...mapGetters('stats', ['statNames', 'totalStat', 'dmgBonuses',]),
     ...mapState('attacks', ['dmgTypes', 'elementalTypes',]),
     ...mapGetters('attacks', ['calculateAttacks',]),
     length() {
@@ -78,10 +77,11 @@ export default {
         };
       });
 
-      for (const property in this.dmgBonuses) {
+      const dmgBonuses = this.dmgBonuses;
+      for (const property in dmgBonuses) {
         items.push({
           stat: property,
-          value: this.dmgBonuses[property].toFixed(2),
+          value: dmgBonuses[property].toFixed(2),
         });
       } // for
 

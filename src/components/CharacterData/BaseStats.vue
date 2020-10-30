@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import BaseLayout from './BaseLayout';
 import StatSelector from '../util/StatSelector';
 
@@ -78,23 +78,11 @@ export default {
   data() {
     return {
       level: 1,
-      weapon: {
-        atk: 0,
-        substat: {
-          stat: 'maxHP',
-          value: 0,
-          isFlat: true,
-        },
-      },
-      baseStats: {},
       includesWeaponAtk: true,
     };
   },
-  created() {
-    // Hack cause I am lazy
-    this.baseStats = this.$store._modules.root._rawModule.modules.stats.state.baseStats;
-  },
   computed: {
+    ...mapState('stats', ['weapon', 'baseStats',]),
     ...mapGetters('stats', ['totalStat',]),
   },
   methods: {

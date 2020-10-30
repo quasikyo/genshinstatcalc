@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: Abstract the layout to reduce repeated code -->
   <BaseLayout id="artifacts" headerText="Artifacts">
     <template v-slot>
       <v-form>
@@ -83,31 +82,8 @@ export default {
       });
       postChange();
     },
-    // TODO: terribly inefficient to do this every change; find a better way
     setArtifactBuffs() {
-      const buffs = {};
-
-      this.artifacts.forEach((artifact) => {
-        if (!buffs[artifact.mainStat.stat]) {
-          buffs[artifact.mainStat.stat] = []
-        }
-        buffs[artifact.mainStat.stat].push({
-          value: Number(artifact.mainStat.value),
-          isFlat: artifact.mainStat.isFlat,
-        });
-
-        artifact.substats.forEach((substat) => {
-          if (!buffs[substat.stat]) {
-            buffs[substat.stat] = []
-          }
-          buffs[substat.stat].push({
-            value: Number(substat.value),
-            isFlat: substat.isFlat,
-          });
-        });
-      });
-
-      this.$store.dispatch('stats/setArtifactBuffs', buffs);
+      this.$store.dispatch('stats/setArtifactBuffs', this.artifacts);
     },
   },
 };

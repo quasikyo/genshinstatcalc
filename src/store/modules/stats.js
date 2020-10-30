@@ -5,7 +5,7 @@ const state = {
   weapon: {
     atk: 0,
     substat: {
-      stat: '',
+      stat: 'maxHP',
       value: 0,
       isFlat: true,
     },
@@ -76,21 +76,19 @@ const state = {
       isFlat: false,
     },
   },
-  dmgBonuses: {
-    normal: 0.1,
-    charged: 0.2,
-    skill: 0.3,
-    burst: 0.4,
-  },
   includesWeaponAtk: true,
   buffs: {},
 };
 
 const getters = {
   statNames(state) {
-    return function(areFlat, ignore=false) {
-      const names = Object.keys(state.baseStats);
-      return names.filter((name) => ignore || state.baseStats[name].isFlat == areFlat);
+    return function(areFlat, ignore=false, includeDmgBonuses=false) {
+      let names = Object.keys(state.baseStats);
+      names = names.filter((name) => ignore || state.baseStats[name].isFlat == areFlat);
+      if (includeDmgBonuses) {
+        names.push(...['normal', 'charged', 'skill', 'burst',]);
+      } // if
+      return names;
     };
   },
   totalStat(state) {
@@ -140,7 +138,40 @@ const getters = {
       return total;
     };
   },
+  dmgBonuses(state) {
+    const bonuses = {
+      normal: 0,
+      charged: 0,
+      skill: 0,
+      burst: 0,
+    };
+
+    for (const bonus in bonuses) {
+      const correspondingBuffs = state.buffs[bonus];
+      if (!correspondingBuffs) {
+        continue;
+      } // if
+
+      bonuses[bonus] = correspondingBuffs.reduce((total, buff) => {
+        if (buff.isFlat) {
+          throw new Error('DMG Bonuses can only be expressed with %.');
+        } //
+        return total + buff.value;
+      });
+    } // for
+    return bonuses;
+  },
 };
+
+const buffHelper = function(state, { stat, value, isFlat }) {
+  if (!state.buffs[stat]) {
+    state.buffs[stat] = [];
+  } // if
+  state.buffs[stat].push({
+    value: Number(value),
+    isFlat: isFlat,
+  });
+}; // buffHelper
 
 const mutations = {
   setLevel(state, level) {
@@ -153,8 +184,14 @@ const mutations = {
     state.baseStats[statName] = stat;
     state.includesWeaponAtk = includesWeaponAtk;
   },
-  setArtifactBuffs(state, buffs) {
-    state.buffs = buffs;
+  setArtifactBuffs(state, artifacts) {
+    state.buffs = {};
+    artifacts.forEach((artifact) => {
+      buffHelper(state, artifact.mainStat);
+      artifact.substats.forEach((substat) => {
+        buffHelper(state, substat);
+      });
+    });
   },
 };
 
@@ -168,8 +205,8 @@ const actions = {
   setBaseStat({ commit }, { statName, stat, includesWeaponAtk }) {
     commit('setBaseStat', { statName, stat, includesWeaponAtk });
   },
-  setArtifactBuffs({ commit }, buffs) {
-    commit('setArtifactBuffs', buffs);
+  setArtifactBuffs({ commit }, artifacts) {
+    commit('setArtifactBuffs', artifacts);
   },
 };
 
