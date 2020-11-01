@@ -37,9 +37,7 @@
             @change="setAttack(i)"
           />
 
-          <v-btn outlined color="error" @click="removeAttack(i)">
-            Remove
-          </v-btn>
+          <v-btn outlined color="error" @click="removeAttack(i)">Remove</v-btn>
           <br>
         </fieldset>
       </v-form>

@@ -98,9 +98,4 @@ export default {
 .main-stat-inputs {
   display: flex;
 }
-
-#artifacts .v-input--selection-controls {
-  margin-top: 0;
-  padding-top: 0;
-}
 </style>

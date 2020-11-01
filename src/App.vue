@@ -33,4 +33,9 @@ export default {
 fieldset {
   border: none;
 }
+
+.v-input--selection-controls {
+  margin-top: 0;
+  padding-top: 0;
+}
 </style>

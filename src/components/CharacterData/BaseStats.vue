@@ -118,9 +118,4 @@ export default {
 .substat-inputs {
   display: flex;
 }
-
-#weapon .v-input--selection-controls, #baseStats .v-input--selection-controls {
-  margin-top: 0;
-  padding-top: 0;
-}
 </style>

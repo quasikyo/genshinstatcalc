@@ -1,6 +1,6 @@
 <template>
   <section id="characterData">
-    <v-navigation-drawer app>
+    <v-navigation-drawer app mobile-breakpoint="0">
       <v-container>
         <v-item-group v-model="window" mandatory>
           <v-row no-gutters v-for="row in length / buttonsPerRow" :key="row" justify="space-between">
