@@ -91,7 +91,7 @@ const getters = {
       let names = Object.keys(state.baseStats);
       names = names.filter((name) => ignore || state.baseStats[name].isFlat == areFlat);
       if (includeDmgBonuses) {
-        names.push('normal', 'charged', 'skill', 'burst');
+        names.push('dmg', 'normal', 'charged', 'skill', 'burst');
       } // if
       return names;
     };
@@ -140,6 +140,7 @@ const getters = {
   },
   dmgBonuses(state) {
     const bonuses = {
+      dmg: 0,
       normal: 0,
       charged: 0,
       skill: 0,

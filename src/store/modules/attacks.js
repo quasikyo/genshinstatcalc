@@ -1,5 +1,5 @@
 const state = {
-  dmgTypes: ['Normal', 'Charged', 'Skill', 'Burst',],
+  dmgTypes: ['DMG', 'Normal', 'Charged', 'Skill', 'Burst',],
   elementalTypes: ['PHYS', 'Elemental'],
   attacks: [],
 };
@@ -15,6 +15,9 @@ const getters = {
         } else {
           dmgBonusSum += elemental;
         } // if
+
+        // Added to all damage
+        dmgBonusSum += dmgTypeBonuses['dmg'];
 
         state.dmgTypes.forEach((type) => {
           if (attack.dmgType == type) {
