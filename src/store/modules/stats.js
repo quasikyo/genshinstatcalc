@@ -148,16 +148,29 @@ const getters = {
 
     for (const bonus in bonuses) {
       const artifactCorrespondingBuffs = state.artifactBuffs[bonus];
-      if (!artifactCorrespondingBuffs) {
-        continue;
+      if (artifactCorrespondingBuffs) {
+        artifactCorrespondingBuffs.forEach((buff) => {
+          if (buff.isFlat) {
+            throw new Error('DMG Bonuses can only be expressed with %.');
+          } // if
+          bonuses[bonus] += buff.value;
+        });
       } // if
 
-      bonuses[bonus] = artifactCorrespondingBuffs.reduce((total, buff) => {
-        if (buff.isFlat) {
-          throw new Error('DMG Bonuses can only be expressed with %.');
-        } //
-        return total + buff.value;
-      });
+      const otherCorrespondingBuffs = state.otherBuffs[bonus];
+      if (otherCorrespondingBuffs) {
+        otherCorrespondingBuffs.forEach((buff) => {
+          const isActive = buff.isPermanent || buff.isActive;
+          if (!isActive) {
+            return;
+          } // if
+
+          if (buff.type != 'percent') {
+            throw new Error('DMG Bonuses can only be expressed with %.');
+          } // if
+          bonuses[bonus] += Number(buff.value);
+        });
+      } // if
     } // for
     return bonuses;
   },
