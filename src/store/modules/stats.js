@@ -1,4 +1,7 @@
+import { sumArtifactBuffs, buffHelper } from '../util/stats';
+
 // TODO: modify to be per character instead of global
+// TODO: convert artifact buff structure to the one used for other buffs
 
 const state = {
   level: 1,
@@ -77,7 +80,9 @@ const state = {
     },
   },
   includesWeaponAtk: true,
-  buffs: {},
+  artifactBuffs: {},
+  otherBuffTypes: ['flat', 'percent', 'percentOfOther',],
+  otherBuffs: {},
 };
 
 const getters = {
@@ -86,7 +91,7 @@ const getters = {
       let names = Object.keys(state.baseStats);
       names = names.filter((name) => ignore || state.baseStats[name].isFlat == areFlat);
       if (includeDmgBonuses) {
-        names.push(...['normal', 'charged', 'skill', 'burst',]);
+        names.push('normal', 'charged', 'skill', 'burst');
       } // if
       return names;
     };
@@ -97,18 +102,7 @@ const getters = {
       let base = Number(state.baseStats[stat].value);
 
       // Apply buffs from artifacts and other sources
-      // TODO: add error checking for flat increases on a non-flat base
-      let percentagesSum = 0;
-      let flatSum = 0;
-      if (state.buffs[stat]) {
-        state.buffs[stat].forEach((increase) => {
-          if (increase.isFlat) {
-            flatSum += increase.value;
-          } else {
-            percentagesSum += increase.value;
-          } // if
-        });
-      } // if
+      let { percentagesSum, flatSum } = sumArtifactBuffs(state, stat);
 
       // Apply weapon buffs if not already included
       // TODO: add error checking for flat increases on a non-flat base
@@ -147,12 +141,12 @@ const getters = {
     };
 
     for (const bonus in bonuses) {
-      const correspondingBuffs = state.buffs[bonus];
-      if (!correspondingBuffs) {
+      const artifactCorrespondingBuffs = state.artifactBuffs[bonus];
+      if (!artifactCorrespondingBuffs) {
         continue;
       } // if
 
-      bonuses[bonus] = correspondingBuffs.reduce((total, buff) => {
+      bonuses[bonus] = artifactCorrespondingBuffs.reduce((total, buff) => {
         if (buff.isFlat) {
           throw new Error('DMG Bonuses can only be expressed with %.');
         } //
@@ -162,16 +156,6 @@ const getters = {
     return bonuses;
   },
 };
-
-const buffHelper = function(state, { stat, value, isFlat }) {
-  if (!state.buffs[stat]) {
-    state.buffs[stat] = [];
-  } // if
-  state.buffs[stat].push({
-    value: Number(value),
-    isFlat: isFlat,
-  });
-}; // buffHelper
 
 const mutations = {
   setLevel(state, level) {
@@ -185,13 +169,24 @@ const mutations = {
     state.includesWeaponAtk = includesWeaponAtk;
   },
   setArtifactBuffs(state, artifacts) {
-    state.buffs = {};
+    state.artifactBuffs = {};
+
+    const artifactBuffHelper = buffHelper(state)('artifactBuffs');
     artifacts.forEach((artifact) => {
-      buffHelper(state, artifact.mainStat);
+      artifactBuffHelper(artifact.mainStat);
       artifact.substats.forEach((substat) => {
-        buffHelper(state, substat);
+        artifactBuffHelper(substat);
       });
     });
+  },
+  setOtherBuffs(state, otherBuffs) {
+    state.otherBuffs = {};
+
+    const otherBuffHelper = buffHelper(state)('otherBuffs');
+    otherBuffs.forEach((buff) => {
+      otherBuffHelper(buff);
+    });
+    console.log(state.otherBuffs);
   },
 };
 
@@ -207,6 +202,9 @@ const actions = {
   },
   setArtifactBuffs({ commit }, artifacts) {
     commit('setArtifactBuffs', artifacts);
+  },
+  setOtherBuffs({ commit }, otherBuffs) {
+    commit('setOtherBuffs', otherBuffs)
   },
 };
 

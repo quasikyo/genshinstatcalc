@@ -8,7 +8,6 @@
           :key="`artifact-${i}`"
         >
           <legend><h6 class="text-h6">{{ `Artifact ${i + 1}` }}</h6></legend>
-          <br>
 
           <StatSelector
             className="main-stat-inputs"
@@ -78,7 +77,9 @@ export default {
   methods: {
     updateOriginal({ original, postChange, stat, value, isFlat }) {
       Object.assign(original, {
-        stat, value, isFlat
+        stat,
+        value: Number(value),
+        isFlat,
       });
       postChange();
     },
