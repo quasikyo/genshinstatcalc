@@ -20,6 +20,31 @@ export const sumArtifactBuffs = function(state, stat) {
   return { percentagesSum, flatSum };
 };
 
+export const calculateOtherBuffs = function(state, stat, statCalcFunc) {
+  const calculateStat = statCalcFunc(state);
+  const buffs = state.otherBuffs[stat];
+  let percentageIncrease = 0;
+  let flatIncrease = 0;
+
+  if (!buffs) {
+    return { percentageIncrease, flatIncrease };
+  } // if
+
+  buffs.forEach((buff) => {
+    const isActive = buff.isPermanent || buff.isActive;
+    if (isActive && buff.type == 'flat') {
+      flatIncrease += buff.value;
+    } else if (isActive && buff.type == 'percent') {
+      percentageIncrease += buff.value;
+    } else if (isActive) {
+      // TODO: prevent stat1 from calling with stat2
+      //       when stat2 also depends on stat1
+      flatIncrease += calculateStat(buff.otherStat) * buff.value;
+    } // if
+  });
+  return { percentageIncrease, flatIncrease, };
+}; // calculateOtherBuffs
+
 /**
  * A curried helper function to add buffs to the stat's store.
  *

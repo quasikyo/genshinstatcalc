@@ -2,6 +2,40 @@
   <!-- This entire layout is really repetitive of the other files. -->
   <BaseLayout id="otherBuffs" headerText="Other Buffs">
     <template v-slot>
+      <v-dialog v-model="warningDialog" width="50%">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="warning" v-on="on" v-bind="attrs" outlined>Warning</v-btn>
+        </template>
+
+        <v-card>
+          <v-card-title>
+            <h6 class="text-h6 warning--text">Potentially Dangerous Operation</h6>
+          </v-card-title>
+          <v-card-text>
+            <p class="body-1">
+              Selecting <code>percentOfOther</code> for some stat_1 and having
+              it be increased by state_2 <em>and</em> creating their vice-versa
+              buff is potentially dangerous.
+              <br><br>
+              This may cause a currently unsolved dependency between the two
+              as it is necessary to calculate the total of one stat to calculate
+              the total of the other.
+              <br><br>
+              It is okay to create the buffs, but if they are applied at the
+              same time it may cause the browsers of weaker devices to stutter
+              and potentially crash.
+              <br><br>
+              Please opt for creating a <code>flat</code> buff instead.
+              Apologies for the inconvenience.
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="warningDialog = false;">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-form ref="form" @submit.prevent>
         <fieldset
           class="buff-inputs"
@@ -52,7 +86,7 @@
           <v-switch
             dense
             label="Permanent"
-            v-model="buff.permanent"
+            v-model="buff.isPermanent"
             @change="setOtherBuffs"
           />
 
@@ -83,6 +117,7 @@ export default {
   },
   data() {
     return {
+      warningDialog: false,
       buffs: [],
     };
   },
@@ -91,35 +126,34 @@ export default {
     ...mapGetters('stats', ['statNames',]),
     appropriateStatNames() {
       return function(buffType, forOther=false, statBeingInc=null) {
-        if (forOther) { // implicit `buffType == 'percentOfOther'`
-          const statNames = this.statNames(false, true);
-          // prevent infinite recursion by increasing a stat with itself
-          const iStatBeingInc = statNames.findIndex((stat) => stat == statBeingInc);
-          statNames.splice(iStatBeingInc, 1);
-          return statNames;
-        } // if
-
         // Flat stats can only increase flat bases.
         // % stats can increase flat and other %.
-        // %OfOther results in a flat increase.
+        // %OfOther results in a flat increase (cannot get a flat value by multiplying just percents).
         if (buffType == 'percent') {
           return this.statNames(false, true, true);
         } else {
-          return this.statNames(true);
+          const statNames = this.statNames(true);
+          if (forOther) {
+            // prevent infinite recursion by increasing a stat with itself
+            const iStatBeingInc = statNames.findIndex((stat) => stat == statBeingInc);
+            statNames.splice(iStatBeingInc, 1);
+          } // if
+          return statNames;
         } // if
       };
     },
   },
   methods: {
     addBuff() {
+      const length = this.buffs.length;
       this.buffs.push({
-        label: '',
+        label: `Some Buff ${length}`,
         stat: 'maxHP',
         otherStat: 'atk',
         type: 'flat',
         value: 0,
-        permanent: false,
-        applied: false,
+        isPermanent: false,
+        isActive: false,
       });
       this.setOtherBuffs();
     },
@@ -137,10 +171,5 @@ export default {
 <style>
 #addBuffBtn {
   margin-top: 16px;
-}
-
-#otherBuffs .v-input--selection-controls {
-  margin-top: 0;
-  padding-top: 0;
 }
 </style>

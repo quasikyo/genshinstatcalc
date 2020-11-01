@@ -1,4 +1,4 @@
-import { sumArtifactBuffs, buffHelper } from '../util/stats';
+import { sumArtifactBuffs, calculateOtherBuffs, buffHelper } from '../util/stats';
 
 // TODO: modify to be per character instead of global
 // TODO: convert artifact buff structure to the one used for other buffs
@@ -103,6 +103,12 @@ const getters = {
 
       // Apply buffs from artifacts and other sources
       let { percentagesSum, flatSum } = sumArtifactBuffs(state, stat);
+      const {
+        percentageIncrease,
+        flatIncrease,
+      } = calculateOtherBuffs(state, stat, getters.totalStat);
+      percentagesSum += percentageIncrease;
+      flatSum += flatIncrease;
 
       // Apply weapon buffs if not already included
       // TODO: add error checking for flat increases on a non-flat base
@@ -186,7 +192,6 @@ const mutations = {
     otherBuffs.forEach((buff) => {
       otherBuffHelper(buff);
     });
-    console.log(state.otherBuffs);
   },
 };
 
