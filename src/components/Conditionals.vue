@@ -24,8 +24,9 @@
               <v-expansion-panel-content>
                 <article class="buff-data">
                   <p class="body-1">
-                    Increases {{ buff.stat }} by {{ buff.value }}<!--
-                    --><span v-if="buff.type != 'flat'">%</span><!--
+                    Increases {{ buff.stat }} by <!--
+                    --><span v-if="buff.type == 'flat'">{{ buff.value }}</span><!--
+                    --><span v-else-if="buff.type != 'flat'">{{ buff.value * 100 }}%</span><!--
                     --><span v-if="buff.type == 'percentOfOther'"> of {{ buff.otherStat }}</span>
                   </p>
                 </article>

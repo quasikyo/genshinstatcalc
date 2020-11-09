@@ -148,16 +148,6 @@ const getters = {
     };
 
     for (const bonus in bonuses) {
-      const artifactCorrespondingBuffs = state.artifactBuffs[bonus];
-      if (artifactCorrespondingBuffs) {
-        artifactCorrespondingBuffs.forEach((buff) => {
-          if (buff.isFlat) {
-            throw new Error('DMG Bonuses can only be expressed with %.');
-          } // if
-          bonuses[bonus] += buff.value;
-        });
-      } // if
-
       const otherCorrespondingBuffs = state.otherBuffs[bonus];
       if (otherCorrespondingBuffs) {
         otherCorrespondingBuffs.forEach((buff) => {
@@ -191,7 +181,7 @@ const mutations = {
   setArtifactBuffs(state, artifacts) {
     state.artifactBuffs = {};
 
-    const artifactBuffHelper = buffHelper(state)('artifactBuffs');
+    const artifactBuffHelper = buffHelper(state, 'artifactBuffs');
     artifacts.forEach((artifact) => {
       artifactBuffHelper(artifact.mainStat);
       artifact.substats.forEach((substat) => {
@@ -202,7 +192,7 @@ const mutations = {
   setOtherBuffs(state, otherBuffs) {
     state.otherBuffs = {};
 
-    const otherBuffHelper = buffHelper(state)('otherBuffs');
+    const otherBuffHelper = buffHelper(state, 'otherBuffs');
     otherBuffs.forEach((buff) => {
       otherBuffHelper(buff);
     });

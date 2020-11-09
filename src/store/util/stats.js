@@ -48,21 +48,19 @@ export const calculateOtherBuffs = function(state, stat, statCalcFunc) {
 /**
  * A curried helper function to add buffs to the stat's store.
  *
- * @param {Object}  state    the state of the stat's store
- * @param {string}  buffType either `'artifactBuffs'` or `'otherBuffs'`
- * @param {Object}  buff     the buff to add to the state
+ * @param {object} state    the state of the stat's store
+ * @param {string} buffType either `'artifactBuffs'` or `'otherBuffs'`
+ * @param {object} buff     the buff to add to the state
  */
-export const buffHelper = function(state) {
-  return function(buffType) {
-    return function(buff) {
-      const stat = buff.stat;
+export const buffHelper = function(state, buffType) {
+  return function(buff) {
+    const stat = buff.stat;
 
-      if (!state[buffType][stat]) {
-        state[buffType][stat] = [];
-      } // if
+    if (!state[buffType][stat]) {
+      state[buffType][stat] = [];
+    } // if
 
-      buff.value = Number(buff.value);
-      state[buffType][stat].push(buff);
-    };
+    buff.value = Number(buff.value);
+    state[buffType][stat].push(buff);
   };
 }; // buffHelper

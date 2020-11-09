@@ -2,7 +2,7 @@
   <section id="results" style="">
     <v-container fluid>
       <v-item-group v-model="window" mandatory>
-        <v-item v-for="i in length" :key="i" v-slot="{ active, toggle }">
+        <v-item v-for="i in labels.length" :key="i" v-slot="{ active, toggle }">
           <v-btn tile x-large :input-value="active" @click="toggle">
             {{ labels[i - 1] }}
           </v-btn>
@@ -30,6 +30,15 @@
                 :disable-pagination="true"
                 hide-default-footer
               />
+              <br>
+              <v-radio-group v-model="critAction" row>
+                <v-radio
+                  v-for="i in critActions.length"
+                  :key="i"
+                  :label="critActions[i - 1]"
+                  :value="i - 1"
+                />
+              </v-radio-group>
             </v-col>
           </v-row>
         </v-window-item>
@@ -51,6 +60,8 @@ export default {
     return {
       window: 0,
       labels: ['TOTAL STATS', 'DMG'],
+      critActions: ['No Crit', 'Crit', 'Crit Average',],
+      critAction: 0,
       statsHeaders: [
         { text: 'Stat', value: 'stat', },
         { text: 'Total', value: 'value', },
@@ -65,9 +76,6 @@ export default {
     ...mapGetters('stats', ['statNames', 'totalStat', 'dmgBonuses',]),
     ...mapState('attacks', ['dmgTypes', 'elementalTypes',]),
     ...mapGetters('attacks', ['calculateAttacks',]),
-    length() {
-      return this.labels.length;
-    },
     statsItems() {
       const stats = this.statNames(null, true);
       const items = stats.map((stat) => {
@@ -88,11 +96,18 @@ export default {
       return items;
     },
     dmgItems() {
-      const totalAtk = this.totalStat('atk');
-      const phys = this.totalStat('physicalBonus');
-      const elemental = this.totalStat('elementalBonus');
-
-      return this.calculateAttacks(totalAtk, phys, elemental, this.dmgBonuses);
+      return this.calculateAttacks(
+        this.totalStat('atk'),
+        this.totalStat('physicalBonus'),
+        this.totalStat('elementalBonus'),
+        this.dmgBonuses,
+        {
+          apply: this.critAction == 1,
+          average: this.critAction == 2,
+          dmg: this.totalStat('critDMG'),
+          rate: this.totalStat('critRate'),
+        }
+      );
     },
   },
 };
@@ -101,6 +116,5 @@ export default {
 <style>
 #results {
   width: 100%;
-  /* scroll-margin: 2rem; */
 }
 </style>
